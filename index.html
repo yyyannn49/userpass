@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Secure Vault</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #020617; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .login-card {
+            background: #0f172a; padding: 40px; border-radius: 20px; 
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 100%; max-width: 380px;
+            text-align: center; border: 1px solid #1e293b; animation: slideIn 0.8s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        h2 { margin-bottom: 10px; color: #38bdf8; text-transform: uppercase; letter-spacing: 2px; }
+        p { color: #64748b; font-size: 0.9rem; margin-bottom: 25px; }
+        input {
+            width: 100%; padding: 14px; margin-bottom: 15px; background: #1e293b;
+            border: 1px solid #334155; border-radius: 10px; color: white; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,0.3); }
+        button {
+            width: 100%; padding: 14px; background: #38bdf8; color: #020617;
+            border: none; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { background: #7dd3fc; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56,189,248,0.4); }
+        #errorMsg { color: #fb7185; font-size: 0.8rem; margin-top: 15px; display: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>Gate Keeper</h2>
+        <p>Identify yourself to proceed</p>
+        <input type="password" id="p" placeholder="Enter Access Key...">
+        <button onclick="check()">UNLOCK</button>
+        <div id="errorMsg">⚠️ ACCESS DENIED</div>
+    </div>
+
+    <script>
+        function check() {
+            const p = document.getElementById('p').value;
+            if (p === "royyan gtg") {
+                localStorage.setItem('gate_open', 'true');
+                window.location.href = 'home.html';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => { document.getElementById('errorMsg').style.display = 'none'; }, 2000);
+            }
+        }
+        document.addEventListener('keypress', (e) => { if(e.key === 'Enter') check(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Vault v3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
+        body { background: #020617; color: #e2e8f0; padding: 20px; }
+        .container {
+            max-width: 800px; margin: 40px auto; background: #0f172a; padding: 30px;
+            border-radius: 24px; border: 1px solid #1e293b; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
+        h1 { color: #38bdf8; font-size: 1.5rem; text-shadow: 0 0 10px rgba(56,189,248,0.3); }
+        textarea {
+            width: 100%; height: 180px; background: #020617; border: 1px solid #334155;
+            border-radius: 15px; padding: 20px; color: #38bdf8; font-size: 1rem;
+            resize: none; outline: none; margin-bottom: 20px; transition: 0.3s;
+        }
+        textarea:focus { border-color: #38bdf8; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        button {
+            padding: 15px; border-radius: 12px; border: none; font-weight: bold;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+        }
+        .primary { background: #38bdf8; color: #020617; }
+        .secondary { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        
+        .result-container {
+            background: #020617; border-radius: 15px; padding: 20px; border-left: 5px solid #38bdf8;
+            position: relative; animation: fadeIn 0.5s;
+        }
+        #result { word-break: break-all; color: #94a3b8; min-height: 40px; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; font-size: 0.7rem;
+            background: #38bdf8; color: #020617; padding: 5px 10px; border-radius: 5px;
+        }
+        .footer-tools { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .tool-link { color: #64748b; text-decoration: none; font-size: 0.8rem; cursor: pointer; }
+        .tool-link:hover { color: #f87171; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SECURE_CIPHER_v3</h1>
+        <span style="color: #22c55e;">● Online/Offline</span>
+    </div>
+
+    <textarea id="box" placeholder="Input message or encrypted code here..."></textarea>
+    
+    <div class="btn-group">
+        <button class="primary" onclick="process(true)">Encode (Lapis 3)</button>
+        <button class="secondary" onclick="process(false)">Decode</button>
+    </div>
+
+    <div class="result-container">
+        <button class="copy-btn" onclick="copy()">COPY</button>
+        <div id="result">Waiting for input...</div>
+    </div>
+
+    <div class="footer-tools">
+        <a class="tool-link" onclick="downloadFile()">⬇ Download .TXT</a>
+        <a class="tool-link" onclick="clearAll()">🧹 Clear All</a>
+        <a class="tool-link" onclick="logout()" style="color: #ef4444;">✖ Logout</a>
+    </div>
+</div>
+
+<script>
+    if (localStorage.getItem('gate_open') !== 'true') window.location.href = 'login.html';
+
+    function process(enc) {
+        const val = document.getElementById('box').value;
+        const res = document.getElementById('result');
+        if(!val) return;
+
+        res.innerText = "Encrypting...";
+        setTimeout(() => {
+            try {
+                if (enc) {
+                    res.innerText = btoa(btoa(btoa(val))); // Triple Base64
+                    res.style.color = "#38bdf8";
+                } else {
+                    res.innerText = atob(atob(atob(val)));
+                    res.style.color = "#22c55e";
+                }
+            } catch(e) {
+                res.innerText = "ERROR: Invalid Data Format!";
+                res.style.color = "#fb7185";
+            }
+        }, 400);
+    }
+
+    function copy() {
+        const t = document.getElementById('result').innerText;
+        navigator.clipboard.writeText(t);
+        alert("Copied to clipboard!");
+    }
+
+    function downloadFile() {
+        const t = document.getElementById('result').innerText;
+        const blob = new Blob([t], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "secure_message.txt";
+        a.click();
+    }
+
+    function clearAll() {
+        document.getElementById('box').value = "";
+        document.getElementById('result').innerText = "Waiting for input...";
+        document.getElementById('result').style.color = "#94a3b8";
+    }
+
+    function logout() {
+        localStorage.removeItem('gate_open');
+        window.location.href = 'login.html';
+    }
+</script>
+
+</body>
+</html>
